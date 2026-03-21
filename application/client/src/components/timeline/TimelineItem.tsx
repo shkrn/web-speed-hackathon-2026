@@ -1,12 +1,19 @@
-import { MouseEventHandler, useCallback } from "react";
+import { MouseEventHandler, Suspense, lazy, useCallback } from "react";
 import { Link, useNavigate } from "react-router";
 
 import { ImageArea } from "@web-speed-hackathon-2026/client/src/components/post/ImageArea";
-import { MovieArea } from "@web-speed-hackathon-2026/client/src/components/post/MovieArea";
-import { SoundArea } from "@web-speed-hackathon-2026/client/src/components/post/SoundArea";
 import { TranslatableText } from "@web-speed-hackathon-2026/client/src/components/post/TranslatableText";
 import { formatDateJa, toISODateString } from "@web-speed-hackathon-2026/client/src/utils/date_format";
 import { getProfileImagePath } from "@web-speed-hackathon-2026/client/src/utils/get_path";
+
+const MovieArea = lazy(async () => {
+  const module = await import("@web-speed-hackathon-2026/client/src/components/post/MovieArea");
+  return { default: module.MovieArea };
+});
+const SoundArea = lazy(async () => {
+  const module = await import("@web-speed-hackathon-2026/client/src/components/post/SoundArea");
+  return { default: module.SoundArea };
+});
 
 const isClickedAnchorOrButton = (target: EventTarget | null, currentTarget: Element): boolean => {
   while (target !== null && target instanceof Element) {
@@ -94,7 +101,9 @@ export const TimelineItem = ({ post }: Props) => {
           ) : null}
           {post.movie ? (
             <div className="relative mt-2 w-full">
-              <MovieArea movie={post.movie} />
+              <Suspense fallback={null}>
+                <MovieArea movie={post.movie} />
+              </Suspense>
             </div>
           ) : post.text.includes("動画を添付したテスト投稿です。") ? (
             <div className="relative mt-2 w-full">
@@ -110,7 +119,9 @@ export const TimelineItem = ({ post }: Props) => {
           ) : null}
           {post.sound ? (
             <div className="relative mt-2 w-full">
-              <SoundArea sound={post.sound} />
+              <Suspense fallback={null}>
+                <SoundArea sound={post.sound} />
+              </Suspense>
             </div>
           ) : post.text.includes("音声を添付したテスト投稿です。") ? (
             <div

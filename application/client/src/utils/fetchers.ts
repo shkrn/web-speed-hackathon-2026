@@ -30,19 +30,21 @@ export async function sendFile<T>(url: string, file: File): Promise<T> {
 }
 
 export async function sendJSON<T>(url: string, data: object): Promise<T> {
-  const jsonString = JSON.stringify(data);
-  const uint8Array = new TextEncoder().encode(jsonString);
-  const { gzip } = await import("pako");
-  const compressed = gzip(uint8Array);
-
   const res = await fetch(url, {
     method: "POST",
     headers: {
-      "Content-Encoding": "gzip",
       "Content-Type": "application/json",
     },
-    body: compressed,
+    body: JSON.stringify(data),
   });
-  if (!res.ok) throw new Error(`sendJSON failed: ${res.status}`);
+  if (!res.ok) {
+    let responseJSON: unknown = null;
+    try {
+      responseJSON = await res.json();
+    } catch {}
+    const err = new Error(`sendJSON failed: ${res.status}`);
+    (err as any).responseJSON = responseJSON;
+    throw err;
+  }
   return res.json() as Promise<T>;
 }

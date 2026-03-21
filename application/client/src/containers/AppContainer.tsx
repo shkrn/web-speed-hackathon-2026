@@ -46,7 +46,7 @@ const TermContainer = lazy(async () => {
   return { default: module.TermContainer };
 });
 const TimelineContainer = lazy(async () => {
-  const module = await import("@web-speed-hackathon-2026/client/src/containers/TimelineContainer");
+  const module = await import(/* webpackPrefetch: true */ "@web-speed-hackathon-2026/client/src/containers/TimelineContainer");
   return { default: module.TimelineContainer };
 });
 const UserProfileContainer = lazy(async () => {
