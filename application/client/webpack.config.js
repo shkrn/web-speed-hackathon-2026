@@ -123,8 +123,24 @@ const config = {
   },
   optimization: {
     minimize: true,
+    runtimeChunk: "single",
     splitChunks: {
-      chunks: "async",
+      chunks: "all",
+      cacheGroups: {
+        reactVendor: {
+          test: /[\\/]node_modules[\\/](react|react-dom|react-router|redux|react-redux|redux-form)[\\/]/,
+          name: "chunk-react-vendor",
+          priority: 30,
+          enforce: true,
+          reuseExistingChunk: true,
+        },
+        defaultVendors: {
+          test: /[\\/]node_modules[\\/]/,
+          name: "chunk-vendor",
+          priority: 20,
+          reuseExistingChunk: true,
+        },
+      },
     },
   },
   cache: false,

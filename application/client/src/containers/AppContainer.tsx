@@ -117,7 +117,7 @@ export const AppContainer = () => {
 
       <Suspense fallback={null}>
         <AuthModalContainer id={authModalId} onUpdateActiveUser={setActiveUser} />
-        <NewPostModalContainer id={newPostModalId} />
+        {activeUser !== null ? <NewPostModalContainer id={newPostModalId} /> : null}
       </Suspense>
     </HelmetProvider>
   );
